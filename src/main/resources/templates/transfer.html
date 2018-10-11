@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<body data-type="index">
+    <div class="am-g tpl-g">
+        <!-- 头部 -->
+        <div th:include="common/header :: atmHeader"></div>
+        <!-- 风格切换 -->
+        
+        <!-- 侧边导航栏 -->
+        <div th:include="common/left :: atmLeft"></div>
+
+        <!-- 内容区域 -->
+        <div class="tpl-content-wrapper">
+
+            <div class="row-content am-cf">
+                <div class="row  am-cf">
+                    
+                    <div class="row">
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">转账操作</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body am-fr">
+
+                                <form class="am-form tpl-form-line-form">
+
+
+                                <div class="am-form-group">
+                                        <label for="user-phone" class="am-u-sm-3 am-form-label">银行卡 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="cards">
+                                              <option value="no">请选择银行卡</option>
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="inCardNum" class="am-u-sm-3 am-form-label">转入卡号 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="tpl-form-input" id="inCardNum" placeholder="请输入收款卡号">
+                                            <small></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="amount" class="am-u-sm-3 am-form-label">金额 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="tpl-form-input" id="amount" placeholder="请输入金额">
+                                            <small></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="pwd" class="am-u-sm-3 am-form-label">密码 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="password" class="tpl-form-input" id="pwd" placeholder="请输入6位银行卡密码">
+                                            <small></small>
+                                        </div>
+                                    </div>
+
+                                    
+
+                                    
+
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-9 am-u-sm-push-3">
+                                            <button type="button" class="am-btn am-btn-primary tpl-btn-bg-color-success " onclick="transfer();">转账</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    
+                </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <div th:include="common/footer :: atmFooter"></div>
+
+    <script>
+        function transfer() {
+
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: '/card/transfer',
+                data: {
+                    cardId : $('#cards').val(),
+                    inCardNum : $('#inCardNum').val(),
+                    pwd : $('#pwd').val(),
+                    amount : $('#amount').val()
+                },
+                success: function (dataResult) {
+                    if (1000 !== dataResult.code) {
+                        alert(dataResult.message);
+                        return false;
+                    }
+
+                    alert('转账成功');
+                },
+                error: function (XMLHttpResponse) {
+                }
+            });
+
+        }
+
+    </script>
+</body>
+
+</html>

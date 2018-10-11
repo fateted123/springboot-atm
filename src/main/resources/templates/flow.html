@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body data-type="index">
+
+    <div class="am-g tpl-g">
+        <!-- 头部 -->
+
+        <div th:include="common/header :: atmHeader"></div>
+
+        <!-- 风格切换 -->
+        
+        <!-- 侧边导航栏 -->
+        <div th:include="common/left :: atmLeft"></div>
+
+        <!-- 内容区域 -->
+        <div class="tpl-content-wrapper">
+
+            <div class="row-content am-cf">
+                <div class="row  am-cf">
+                    
+                    <div class="row">
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">流水操作</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body am-fr">
+
+                                <form class="am-form tpl-form-line-form">
+
+
+                                <div class="am-form-group">
+                                        <label for="user-phone" class="am-u-sm-3 am-form-label">银行卡 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <select data-am-selected="{searchBox: 1}" style="display: none;" id="cards">
+                                              <option value="no">请选择银行卡</option>
+                                            </select>
+                                        <button type="button" class="am-btn am-btn-default am-radius" onclick="loadFlows();">查询</button>
+                                        <button type="button" class="am-btn am-btn-default am-radius" onclick="downFlows();">导出流水</button>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="pwd" class="am-u-sm-3 am-form-label">密码 <span class="tpl-form-line-small-title"></span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="password" class="tpl-form-input" id="pwd" placeholder="请输入6位银行卡密码">
+                                            <small></small>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl"></div>
+                                <div class="widget-function am-fr">
+                                   
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+
+                                <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
+                                    <thead>
+                                        <tr>
+                                            <th>卡号</th>
+                                            <th>金额</th>
+                                            <th>备注</th>
+                                            <th>时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="flowDiv">
+
+
+                                        <!-- more data -->
+                                    </tbody>
+                                </table>
+
+                                <ul class="am-pagination">
+                                  <li><a href="###" onclick="first();">首页 &raquo;</a></li>
+								  <li><a href="###" onclick="pre()">&laquo; 上一页</a></li>
+								  <li><a href="###" onclick="next();">下一页 &raquo;</a></li>
+								  <li><a href="###" onclick="last();">尾页 &raquo;</a></li>
+                                    <li id="pageInfo">
+         
+        							</li>
+								</ul>
+
+
+
+                            </div>
+                        </div>
+
+
+                                <form action="/card/downLoadFlows" method="post" id="downForm">
+                                    <input type="hidden" id="cardIdx" name="cardId">
+                                    <input type="hidden" id="pwdx" name="pwd">
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+        
+
+                    
+                    
+                </div>
+
+               
+
+ 
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+    <div th:include="common/footer :: atmFooter"></div>
+
+<script>
+
+    var cuurentPage = 1;
+    var totalPage = 0;
+
+    $(document).ready(function () {
+    });
+
+    function next() {
+        if (cuurentPage >= totalPage) {
+            return;
+        }
+        cuurentPage ++;
+        loadFlows();
+    }
+
+    function pre() {
+        if (cuurentPage <= 1) {
+            return;
+        }
+        cuurentPage --;
+        loadFlows();
+    }
+
+    function first() {
+        cuurentPage = 1;
+        loadFlows();
+    }
+
+    function last() {
+        cuurentPage = totalPage;
+        loadFlows();
+    }
+
+    function downFlows() {
+        $('#cardIdx').val( $('#cards').val());
+        $('#pwdx').val( $('#pwd').val());
+        $('#downForm').submit();
+    }
+
+    function loadFlows() {
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/card/listFlow',
+            data: {
+                pwd : $('#pwd').val(),//查询请求参数里有敏感信息 就不能使用GET请求
+                cardId : $('#cards').val(),
+                cuurentPage : cuurentPage
+            },
+            success: function (dataResult) {
+                if (5000 == dataResult.code) {
+                    window.location.href = '/toLogin';
+                    return;
+                }
+
+                if (1000 !== dataResult.code) {
+                    alert(dataResult.message);
+                    return false;
+                }
+
+                var msg = '';
+                var results = dataResult.data.data;
+                for (let i=0; i<results.length; i++) {
+                    msg += '<tr class="gradeX">\n' +
+                        '            <td>'+results[i].cardNum+'</td>\n' +
+                        '            <td>'+results[i].amount+'</td>\n' +
+                        '            <td>'+results[i].flowDesc+'</td>\n' +
+                        '            <td>'+results[i].createTime+'</td>\n' +
+                        '            </tr>';
+                }
+
+                totalPage = dataResult.data.totalPage;
+                var pageInfo = cuurentPage + "/" + totalPage;
+                $('#pageInfo').html(pageInfo);
+                $('#flowDiv').html(msg);
+
+            },
+            error: function (XMLHttpResponse) {
+            }
+        });
+    }
+</script>
+
+</body>
+
+</html>

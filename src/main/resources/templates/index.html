@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<body data-type="index">
+    <div class="am-g tpl-g">
+        <!-- 头部 -->
+        <div th:include="common/header :: atmHeader"></div>
+        <!-- 风格切换 -->
+
+        <!-- 侧边导航栏 -->
+        <div th:include="common/left :: atmLeft"></div>
+
+
+        <!-- 内容区域 -->
+        <div class="tpl-content-wrapper">
+
+            <div class="row-content am-cf">
+                <div class="row  am-cf" id="bankCards">
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-4">
+                        <div class="widget widget-primary am-cf">
+                            <div class="widget-statistic-header">
+                                6222*****196
+                            </div>
+                            <div class="widget-statistic-body">
+                                <div class="widget-statistic-value">
+                                    ￥27,294
+                                </div>
+                                <div class="widget-statistic-description">
+                                    
+                                </div>
+                                <span class="widget-statistic-icon am-icon-credit-card-alt"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+               
+
+ <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">最近十笔流水</div>
+                                <div class="widget-function am-fr">
+                                    
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+
+                                <table width="100%" class="am-table am-table-compact am-table-bordered am-table-radius am-table-striped tpl-table-black " id="example-r">
+                                    <thead>
+                                        <tr>
+                                            <th>卡号</th>
+                                            <th>金额</th>
+                                            <th>备注</th>
+                                            <th>时间</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody id="flowDiv">
+                                        <tr class="gradeX">
+                                            <td>6222*****196</td>
+                                            <td>200.00</td>
+                                            <td>存款</td>
+                                            <td>2017-11-26</td>
+                                        </tr>
+                                        <!-- more data -->
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+<script>
+
+    $(document).ready(function () {
+        loadCards();
+        loadTop10();
+    });
+
+    function loadCards() {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/card/listCard',
+            data: {
+            },
+            success: function (dataResult) {
+                if (1000 !== dataResult.code) {
+                    alert(dataResult.message);
+                    return false;
+                }
+
+                var msg = '';
+                var results = dataResult.data;
+
+                for (let i=0; i<results.length; i++) {
+                    msg += '<div class="am-u-sm-12 am-u-md-6 am-u-lg-4">\n' +
+                        '                        <div class="widget widget-primary am-cf">\n' +
+                        '                            <div class="widget-statistic-header">\n' +
+                        '                                '+results[i].cardNum+'\n' +
+                        '                            </div>\n' +
+                        '                            <div class="widget-statistic-body">\n' +
+                        '                                <div class="widget-statistic-value">\n' +
+                        '                                    ￥'+results[i].balance+'\n' +
+                        '                                </div>\n' +
+                        '                                <div class="widget-statistic-description">\n' +
+                        '                                    \n' +
+                        '                                </div>\n' +
+                        '                                <span class="widget-statistic-icon am-icon-credit-card-alt"></span>\n' +
+                        '                            </div>\n' +
+                        '                        </div>\n' +
+                        '                    </div>';
+                }
+
+                $('#bankCards').html(msg);
+            },
+            error: function (XMLHttpResponse) {
+            }
+        });
+    }
+
+    function loadTop10() {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/card/loadTop10Flow',
+            data: {
+            },
+            success: function (dataResult) {
+                if (1000 !== dataResult.code) {
+                    alert(dataResult.message);
+                    return false;
+                }
+
+                var msg = '';
+                var results = dataResult.data;
+
+                for (let i=0; i<results.length; i++) {
+                    msg += '<tr class="gradeX">\n' +
+                        '                                            <td>'+results[i].cardNum+'</td>\n' +
+                        '                                            <td>'+results[i].amount+'</td>\n' +
+                        '                                            <td>'+results[i].flowDesc+'</td>\n' +
+                        '                                            <td>'+results[i].createTime+'</td>\n' +
+                        '                                        </tr>';
+                }
+
+                $('#flowDiv').html(msg);
+            },
+            error: function (XMLHttpResponse) {
+            }
+        });
+    }
+
+</script>
+
+
+</body>
+
+</html>

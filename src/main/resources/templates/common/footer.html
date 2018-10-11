@@ -1,0 +1,35 @@
+
+
+<div th:fragment="atmFooter">
+    <script>
+        (function loadCards() {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: '/card/listCard',
+                data: {
+                },
+                success: function (dataResult) {
+                    if (1000 !== dataResult.code) {
+                        alert(dataResult.message);
+                        return false;
+                    }
+
+                    var msg = '<option value="-1">请选择银行卡</option>\n';
+                    for (let i=0; i<dataResult.data.length;i ++) {
+                        msg += '<option value="'+dataResult.data[i].id+'">'+dataResult.data[i].cardNum+'</option>';
+                    }
+
+                    $('#cards').html(msg);
+
+
+                },
+                error: function (XMLHttpResponse) {
+                }
+            });
+        })();
+
+
+
+    </script>
+</div>

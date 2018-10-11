@@ -1,0 +1,75 @@
+
+<div th:fragment="atmLeft">
+    <div class="left-sidebar">
+        <!-- 用户信息 -->
+        <div class="tpl-sidebar-user-panel">
+            <div class="tpl-user-panel-slide-toggleable">
+
+                <form id="avatarForm" action="/user/uploadAvatar" method="post" enctype="multipart/form-data" target="avatarIframe">
+                    <div class="am-form-group am-form-file">
+                        <div class="tpl-user-panel-profile-picture">
+                            <img src="/show/avatar" alt="" id="userAvatar">
+                        </div>
+                        <input id="doc-form-file" type="file" name="avatar" onchange="uploadAvatar();">
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- 菜单 -->
+        <ul class="sidebar-nav">
+
+            <li class="sidebar-nav-link">
+                <a href="/">
+                    <i class="am-icon-home sidebar-nav-link-logo"></i> 首页
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <a href="/card/toOpenAccount">
+                    <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 开户
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <a href="">
+                    <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 取款
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <a href="/card/toDeposit">
+                    <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 存款
+
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <a href="/card/toTransfer">
+                    <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 转账
+
+                </a>
+            </li>
+
+            <li class="sidebar-nav-link">
+                <a href="/card/toFlow" class="active">
+                    <i class="am-icon-bar-chart sidebar-nav-link-logo"></i> 流水
+
+                </a>
+            </li>
+
+        </ul>
+
+        <script>
+            function uploadAvatar() {
+                $('#avatarForm').submit();
+            }
+
+            function showAvatar() {
+                $("#userAvatar").attr("src", "/show/avatar?" + new Date().getTime());
+            }
+        </script>
+
+        <iframe name="avatarIframe" src="" style="display: none"></iframe>
+    </div>
+
+</div>
+
+
